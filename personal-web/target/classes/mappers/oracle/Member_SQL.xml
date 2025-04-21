@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosa.hello.member.LoginDAO">
+<!-- 쿼리 작성 구문 -->
+<select id="getMember" resultType="org.kosa.hello.member.Member">
+	select * from tb_member where userid = #{userid}
+</select>
+
+<update id="setLoginTime" parameterType="String">
+	update tb_member set loginTime = sysdate
+	where userid = #{userid}
+</update>
+
+<!-- 회원 탈퇴 -->
+<delete id="delete">
+	DELETE FROM TB_MEMBER
+	WHERE userid = #{userid}
+</delete>
+
+
+<update id="update">
+	update tb_member set
+	passwd = #{passwd},
+	name = #{name},
+	age = #{age}
+	where userid = #{userid}
+</update>
+
+<insert id="regist">
+	INSERT INTO tb_member (userid, passwd, name, age) 
+	VALUES (#{userid}, #{passwd}, #{name}, #{age})
+</insert>
+
+<select id="list" resultType="org.kosa.hello.member.Member">
+	SELECT 
+	*
+	FROM (
+	    SELECT rownum rnum, e.* 
+	    FROM (SELECT *
+	        FROM TB_MEMBER tm
+	        <if test="searchValue != null and searValue != ''">
+	        	WHERE name LIKE concat(concat('%',#{searchValue}),'%')
+	        </if> 
+	        ORDER BY userid
+	    ) e
+	    WHERE rownum BETWEEN 1 AND #{end}
+	) o
+	WHERE o.rnum BETWEEN #{start} AND #{end}
+</select>
+
+<select id="getTotalCount" resultType="int">
+	SELECT count(*) 
+	FROM tb_member
+	<if test="searchValue != null and searValue != ''">
+    	WHERE name LIKE concat(concat('%',#{searchValue}),'%')
+    </if>
+</select>
+</mapper>
