@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인 창</title>
+<title>아이디 찾기</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
  <style>
 	header {
@@ -59,8 +59,8 @@
         <input type="password" class="form-control" id="passwd" name="passwd" required>
       </div>
       <input type="submit" class="btn-login" value="로그인">
-      <a href="findID">아이디 찾기</a> /
-      <a href="findPW">비밀번호 찾기</a>
+      <a href="member/findID">아이디 찾기</a> /
+      <a href="member/findPW">비밀번호 찾기</a>
     </form>
   </div>
   

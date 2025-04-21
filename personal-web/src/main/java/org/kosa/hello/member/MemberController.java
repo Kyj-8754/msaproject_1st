@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.kosa.hello.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,8 @@ public class MemberController {
 	@Autowired
 	LoginService loginService;
 	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 		// 회원 가입 동기
 		@RequestMapping("regist")
 		public String regist(@ModelAttribute Member member) {
@@ -44,11 +47,24 @@ public class MemberController {
 		@PostMapping("postregi")
 		@ResponseBody
 		public boolean postRegist(@RequestBody Member member) {
-			System.out.println("받은 member: " + member);
+			String raw = member.getPasswd();
+		    String hash = passwordEncoder.encode(raw);
+		    member.setPasswd(hash);
+			
 			int result = loginService.registForm(member);
 			System.out.println("insert 결과: " + result);
 			return result == 1;
 		}
+		
+		//아이디 찾는로직
+//		@RequestMapping("")
+//		public String findID() {
+//			
+//		}
+		
+		//비밀번호 찾는 로직
+		
+		
 
 
 		// 로그인 처리
