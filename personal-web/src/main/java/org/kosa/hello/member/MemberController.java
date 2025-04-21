@@ -55,24 +55,31 @@ public class MemberController {
 		@PostMapping("login")
 		@ResponseBody
 		public Map<String, Object> login(@RequestBody Member member, HttpSession session) {
+			LoginResult member_result = loginService.login(member.getUserid(), member.getPasswd());
 			Map<String, Object> result = new HashMap<String, Object>();
-			System.out.println(member);
-	      //1. 입력값 검증 (java : Controller)
-	      		if (member.getUserid() == null || member.getUserid().length() == 0 || member.getPasswd()== null || member.getPasswd().length() == 0) {
-	      			//jsp로 오류 메시지 출력 
-	      			result.put("error", true);
-	      		}
-	      		
-	      		member = loginService.login(member.getUserid(), member.getPasswd());
-	      		if (member == null) {
-	      			//jsp로 오류 메시지 출력 
-	      			result.put("error", true);
-	      		}
-	      		
-	      		//6. 로그인 정보를 세션에 기록한다 (java : Controller)
-	      		session.setAttribute("member", member);
-	      		
-	      		//7. 메인페이지로 이동한다 (jsp)
+			int MAX_FAILS = 5;
+			
+			switch (member_result.getStatus()) {
+		      case SUCCESS:
+		        session.setAttribute("member", member_result.getMember());
+		        result.put("status", "SUCCESS");
+		        break;
+		      case NO_USER:
+		        result.put("status", "NO_USER");
+		        result.put("message", "등록된 회원이 아닙니다.");
+		        break;
+		      case FAIL_CREDENTIALS:
+		        result.put("status", "FAIL_CREDENTIALS");
+		        result.put("message", String.format(
+		          "비밀번호 %d회 실패, %d회 남았습니다.",
+		          member_result.getFailCount(), MAX_FAILS - member_result.getFailCount()
+		        ));
+		        break;
+		      case FAIL_LOCKED:
+		        result.put("status", "FAIL_LOCKED");
+		        result.put("message", "5회 실패로 계정이 잠금되었습니다.");
+		        break;
+		    }
 			return result;
 		}
 		
@@ -167,9 +174,12 @@ public class MemberController {
 			
 			// 유저 삭제
 			@RequestMapping("unregister")
-			public String delete(Member member) {
-				
+			public String delete(HttpSession session) {
+				Member member =  (Member)session.getAttribute("member");
+				if(member != null) {
 				loginService.delete(member.getUserid());
+				session.invalidate();
+				}
 				return "redirect:/";
 			}
 			

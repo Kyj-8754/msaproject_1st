@@ -67,6 +67,7 @@
  비밀번호 : <input type="password" name = "passwd"><br/>
 	<input type="submit" value="로그인">
 </form> --%>
+</body>
 <script type="text/javascript">
 // 로그인 확인후 패치
 		let loginForm = document.querySelector("#login");
@@ -86,28 +87,49 @@
 	  		headers: {
 	    		'Content-Type':'application/json;charset=utf-8',
 	  },
-	  body: JSON.stringify({userid : userid.value, passwd : passwd.value})
+	  body: JSON.stringify({ userid: userid.value,
+		  passwd: passwd.value})
 	})
 	  .then(response => {return response.json()})
 	  .then(json => {
-		  if(json.error){
-			  alert("값 입력을 확인해 주세요");
-			  userid.value = "";
-			  passwd.value = "";
-			  userid.focus();
-		  }else{
-			  alert("로그인 되었습니다.")
-			  // location = "./"; //상대경로
-			  // location = "/sts3/"; //절대경로
-			   const contextPath = "${pageContext.request.contextPath}";
- 			location= contextPath + "/";  // 또는 원하는 경로
-		  }
-		  console.log('POST요청결과:', json) 
-	  })
-		 		});
-<c:if test="${error}">
-	alert("아이디 또는 비밀번호가 잘못되었습니다");
-</c:if>
+		  const { status, message } = json;
+		    switch (status) {
+		     	case 'SUCCESS':
+		        alert('로그인 되었습니다.');
+		        // 로그인 성공하면 메인으로 이동
+		        const ctx = '${pageContext.request.contextPath}';
+		        location.href = `${ctx}/yj`;
+		        break;
+
+		      case 'NO_USER':
+		        alert(message);  // "등록된 회원이 아닙니다."
+		        userid.value = '';
+		        passwd.value = '';
+		        userid.focus();
+		        break;
+
+		      case 'FAIL_CREDENTIALS':
+		        alert(message);  
+		        // 남은 시도 횟수만큼 비밀번호만 초기화
+		        passwd.value = '';
+		        passwd.focus();
+		        break;
+
+		      case 'FAIL_LOCKED':
+		        alert(message); 
+		        userid.value = '';
+		        passwd.value = '';
+		        userid.focus();
+		        break;
+
+		      default:
+		        alert('알 수 없는 오류가 발생했습니다.');
+		    }
+		  })
+		  .catch(err => {
+		    console.error(err);
+		    alert('로그인 처리 중 오류가 발생했습니다.');
+		  });
+		 });
 </script> 
-</body>
 </html>

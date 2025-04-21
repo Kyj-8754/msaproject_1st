@@ -4,23 +4,47 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kosa.hello.member.LoginDAO">
-<!-- 쿼리 작성 구문 -->
+
+<!-- 멤버 찾아오기 -->
 <select id="getMember" resultType="org.kosa.hello.member.Member">
 	select * from tb_member where userid = #{userid}
 </select>
 
+<!-- 로그인시 로그인기록 남기기 -->
 <update id="setLoginTime" parameterType="String">
 	update tb_member set loginTime = sysdate
 	where userid = #{userid}
 </update>
 
+<!-- 로그인 실패 기록 카운트 -->
+<update id="fail_login" parameterType="String">
+	update tb_member set fail_login = fail_login + 1
+	where userid = #{userid}
+</update>
+
+<!-- 회원 밴처리-->
+<update id="ban" parameterType="String">
+	update tb_member set fail_login = 5
+	where userid = #{userid}
+</update>
+
+
+<!-- 멤버 차단 풀기 -->
+<update id="unban" parameterType="String">
+	update tb_member set fail_login = 0
+	where userid = #{userid}
+</update>
+
+
 <!-- 회원 탈퇴 -->
-<delete id="delete">
-	DELETE FROM TB_MEMBER
+<update id="delete">
+	update TB_MEMBER set 
+	is_deleted = 'Y', 
+	deleted_at = sysdate
 	WHERE userid = #{userid}
-</delete>
+</update>
 
-
+<!-- 멤버 업데이트 -->
 <update id="update">
 	update tb_member set
 	passwd = #{passwd},
@@ -29,11 +53,13 @@
 	where userid = #{userid}
 </update>
 
+<!-- 등록하기 -->
 <insert id="regist">
-	INSERT INTO tb_member (userid, passwd, name, age) 
-	VALUES (#{userid}, #{passwd}, #{name}, #{age})
+	INSERT INTO tb_member (userid, passwd, name, age, roadaddress, jibunaddress, detail_add, postcode, phone_no) 
+	VALUES (#{userid}, #{passwd}, #{name}, #{age}, #{roadaddress}, #{jibunaddress}, #{detail_add}, #{postcode}, #{phone_no})
 </insert>
 
+<!-- 멤버 리스트 만들기 -->
 <select id="list" resultType="org.kosa.hello.member.Member">
 	SELECT 
 	*
@@ -44,7 +70,7 @@
 	        <if test="searchValue != null and searValue != ''">
 	        	WHERE name LIKE concat(concat('%',#{searchValue}),'%')
 	        </if> 
-	        ORDER BY userid
+	        ORDER BY tm.REGIDATE desc
 	    ) e
 	    WHERE rownum BETWEEN 1 AND #{end}
 	) o

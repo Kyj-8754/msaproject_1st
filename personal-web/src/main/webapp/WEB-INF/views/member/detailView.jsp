@@ -69,7 +69,12 @@
       <div><strong>아이디:</strong> ${memberDB.userid}</div>
       <div><strong>이름:</strong> ${memberDB.name}</div>
       <div><strong>나이:</strong> ${memberDB.age}</div>
+      <div><strong>핸드폰:</strong> ${memberDB.phone_no}</div>
+      <div><strong>주소:</strong> ${memberDB.roadaddress} ${memberDB.jibunaddress}</div>
+      <div><strong>상세 주소:</strong> ${memberDB.detail_add}</div>
       <div><strong>최근로그인일시:</strong> ${memberDB.loginTime}</div>
+      <div><strong>회원 탈퇴 여부:</strong> ${memberDB.is_deleted}</div>
+      <div><strong>탈퇴일:</strong> ${memberDB.deleted_at}</div>
     </div>
 	<a href="/yj">메인으로</a>
 	<a href="updateForm?userid=${memberDB.userid}">회원 수정</a>

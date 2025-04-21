@@ -14,5 +14,7 @@ public interface LoginDAO {
 	public int regist(Member member);
 	public List<Member> list(Map<String, Object> map);
 	public int getTotalCount(Map<String, Object> map);
+	public int fail_login(String userid);
+	public void unban(String userid);
 	public void delete(String userid);
 }

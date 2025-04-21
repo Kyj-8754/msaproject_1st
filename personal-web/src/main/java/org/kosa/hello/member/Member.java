@@ -13,6 +13,16 @@ public class Member {
 	private String name;
 	private int age;
 	private String loginTime;
+	private char is_deleted;
+	private String deleted_at;
+	private String phone_no;
+	private String postcode;
+	private String roadaddress;
+	private String jibunaddress;
+	private String detail_add;
+	private int fail_login;
+	private char supervisor;
+	private String regi_date;
 	
 	
 	public boolean isValid() {
@@ -21,10 +31,4 @@ public class Member {
 		if (name == null || name.length() == 0) return false;
 		return true;
 	}
-	
-	/*
-	 * 1. 테이블 생성
-	 * 2. 샘플 데이터 등록
-	 * 3. 스프링과 데이터 베이스 연동
-	 */
 }
