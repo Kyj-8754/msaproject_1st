@@ -3,7 +3,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.kosa.hello.board.BoardDAO">
+<mapper namespace="org.kosa.hello.board.CommentDAO">
 <!-- 쿼리 작성 구문 -->
 <select id="getBoard" resultType="org.kosa.hello.board.Board">
 	select * from t_board where bno = #{bno}
@@ -31,14 +31,10 @@
 </insert>
 
 <!-- 게시물 삭제 -->
-<update id="delete">
-	update T_BOARD set
-	is_deleted = 'Y', 
-	deleted_at = sysdate
-	WHERE BNO = #{BNO}
-</update>
-
-
+<delete id="delete">
+	DELETE FROM T_BOARD
+	WHERE BNO = #{bno}
+</delete>
 <!-- 게시물 리스트 -->
 <select id="list" resultType="org.kosa.hello.board.Board">
 	SELECT 
@@ -47,9 +43,8 @@
 	    SELECT rownum rnum, e.*
 	    FROM (SELECT *
 	        FROM T_BOARD tm 
-	        WHERE is_deleted = 'N'
 	        <if test="searchValue != null and searValue != ''">
-	        	,WRITER LIKE concat(concat('%',#{searchValue}),'%')
+	        	WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
 	        </if> 
 	        ORDER BY BNO desc
 	    ) e

@@ -32,22 +32,22 @@ public class BoardController {
 	public String regist(@ModelAttribute Board board) {
 		
 		boardService.registForm(board);
-		return "board/list";
+		return "redirect:/board/list";
 	}
 	
 	// 게시물 삭제 
 	@PostMapping("delete")
-	public String delete(Model model, @RequestParam int bno, String passwd) {
+	public String delete(Model model, @RequestParam int bno,@RequestParam String passwd) {
 		Board board =  boardService.getBoard(bno);
 		
-		if(board.getPasswd() != passwd) {
+		if(!board.getPasswd().equals(passwd)) {
 			model.addAttribute("error","삭제가 불가능 합니다.");
-			return "";
+			return "redirect:/board/list";
 		}
-		
+		System.out.println("삭제합니다.");
 		
 		boardService.delete(bno);
-		return "board/list";
+		return "redirect:/board/list";
 	}
 	
 	// 게시판 목록 진입
@@ -95,7 +95,7 @@ public class BoardController {
 		System.out.println("boardDB" + boardDB.getPasswd() + "board" + board.getPasswd());
 		if (!boardDB.getPasswd().equals(board.getPasswd())) {
 			
-			return "redirect:list";
+			return "redirect:/board/detailView?bno=" + board.getBno();
 		}
 		
 		boardService.update(board);
