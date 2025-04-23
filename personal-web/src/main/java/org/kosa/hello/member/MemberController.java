@@ -1,5 +1,6 @@
 package org.kosa.hello.member;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -93,44 +95,35 @@ public class MemberController {
 		        break;
 		      case FAIL_LOCKED:
 		        result.put("status", "FAIL_LOCKED");
-		        result.put("message", "5회 실패로 계정이 잠금되었습니다.");
+		        result.put("message", "계정이 잠금되었습니다.");
 		        break;
 		    }
+			
 			return result;
 		}
 		
 		
 		// 유저 디테일
-		@GetMapping(value="/detailView", params="!userid")
-		public String detailView(Model model, HttpSession session) {
-			Member member = (Member)session.getAttribute("member");
-			if (member == null) {
-				return "redirect:/";
-			} 
-			Member memberDB = loginService.getMember(member.getUserid());
-			if (memberDB == null) {
-				return "redirect:/";
-			}
-			model.addAttribute("memberDB", memberDB);
-			return "member/detailView"; 
-			}
-		
-		// 유저 디테일, 어드민계정전용
-		@GetMapping(value="/detailView", params="userid")
-		public String admin_detailView(Model model, @RequestParam String userid) {
+		@RequestMapping("detailView")
+		public String detailView(Model model, String userid, HttpSession session) {
+			
+			Member SessionMember = (Member)session.getAttribute("member");
+			
+			 
 			Member memberDB = loginService.getMember(userid);
 			if (memberDB == null) {
 				return "redirect:/";
 			}
 			model.addAttribute("memberDB", memberDB);
+			model.addAttribute("SessionMember", SessionMember);
 			return "member/detailView"; 
 			}
 		
 		
-		
 		// 유저 업데이트 폼으로 넘어가기
 		@RequestMapping("updateForm")
-		public String updateForm(Model model, String userid) {
+		public String updateForm(Model model, String userid, HttpSession session) {
+			
 			//1. 입력값 검증 (java : Controller)
 			if (userid == null || userid.length() == 0) {
 				//jsp로 오류 메시지 출력 
@@ -146,7 +139,6 @@ public class MemberController {
 			}
 			
 			model.addAttribute("member", member);
-					
 			return "member/updateForm";
 			}
 		
@@ -210,5 +202,47 @@ public class MemberController {
 						));
 				return "member/list";
 			}
+			
+			//유저 밴처리
+			@PostMapping("ban")
+			@ResponseBody
+			public Map<String, Object> ban(HttpSession session, 
+					@RequestBody Map<String, String> memberban){
+				Map<String, Object> result = new HashMap<String, Object>();
+				 Member admin = (Member) session.getAttribute("member");
+				 // 세션에 관리자 판단 여부 로직
+				if (admin == null || !admin.getSupervisor().equals("Y")) {
+					result.put("success",false);
+					result.put("message", "관리자 권한이 필요합니다.");
+					return result;
+			    }
+				
+				// 회원 DB
+				// 1. 유저 상태 조회
+			    Member targetUser = loginService.getMember(memberban.get("userid"));
+			    if (targetUser == null) {
+			        result.put("success", false);
+			        result.put("message", "해당 유저가 존재하지 않습니다.");
+			        return result;
+			    }
+				// 회원 밴 처리
+			    if(memberban.get("banned").equals("Y")) {
+			    	loginService.ban(memberban.get("userid"));
+			    	result.put("success", true);
+			    	result.put("message", "해당 유저 밴 처리에 성공하였습니다.");
+			    }else if(memberban.get("banned").equals("N")) {
+			    	loginService.unban(memberban.get("userid"));
+			    	result.put("success", true);
+			    	result.put("message", "해당 유저 해제 처리에 하였습니다.");
+			    }
+			    else{
+			    	result.put("success", false);
+			    	result.put("message", "알 수 없는 오류로 처리 실패했습니다.");
+			    }
+				
+				return result;
+				}
+			
+				
 		
 }

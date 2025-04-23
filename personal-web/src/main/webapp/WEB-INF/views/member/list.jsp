@@ -1,119 +1,146 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>회원 리스트</title>
+<title>개인 커뮤니티</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<c:set var="root" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" type="text/css"
+	href="${root}/resources/css/common.css" />
 </head>
-<!-- <style>
-  header {
-     position: fixed;
-     top: 10px;
-     right: 10px;
-   }
-
- /* body 전체 내용을 가운데 정렬 */
- body {
-   text-align: center;
- }
- 
- /* 테이블 가운데 정렬 및 테두리 제거 */
- table {
-   border-collapse: collapse; /* 셀 간 간격 제거 */
-   margin: 0 auto;            /* 테이블을 가운데 배치 */
-   width: 1000px;
- }
- 
- /* th, td의 기본 테두리 제거 및 패딩 적용 */
- th, td {
-   border: none;
-   padding: 6px;
- }
- 
- /* thead 영역은 별도의 테두리 없음 */
- thead tr {
-   border-bottom: 2px solid gray;
- }
- 
- /* tbody의 각 행에 회색 밑줄 추가 */
- tbody tr {
-   border-bottom: 1px solid gray;
- }
-</style> -->
-
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
-
 <body>
-  <h2>회원 리스트</h2>
-  
-  
-   건수 : <select name="size" id="size">
-	<c:forTokens items="10,30,90,100" delims="," var="size">
-		<option value="${size}" ${pageResponse.size == size ? 'selected' : ''}>${size}</option>
-	</c:forTokens>
-	</select>
-	
-	<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
-	(${pageResponse.pageNo}/${pageResponse.totalPage})<br/>
-	
-	<form action="list?searchValue=${pageResponse.searchValue}" name="searchID" id="searchID">
-	검색어 : <input type="text" name="searchValue" id="searchValue" value="${pageResponse.searchValue}">
-	<input type="submit" value="검색">
-	</form>
-	
-  <table>
-    <thead>
-      <tr>
-        <th>번호</th>
-        <th>아이디</th>
-        <th>이름</th>
-        <th>나이</th>
-        <th>로그인 일시</th>
-      </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${pageResponse.list}" var="item" varStatus="status">
-      <tr>
-        <td>${status.count + (pageResponse.pageNo - 1) * pageResponse.size}</td>
-         <td><a href="detailView?userid=${item.userid}">${item.userid}</a></td>
-         <td>${item.name}</td>
-         <td>${item.age}</td>
-         <td>${item.loginTime}</td>
-      </tr>
-      </c:forEach>
-    </tbody>
-  </table>
-  
-  <!-- 페이지 처리 -->
-  		<c:if test="${pageResponse.prev}">
-		<a href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>
+	<!-- 상단 헤더부분 -->
+	<jsp:include page="/WEB-INF/views/common/header.jsp" />
+	<!-- 메인 콘텐츠 -->
+	<div class="container-fluid main-container">
+		<div class="row h-100">
+			<jsp:include page="/WEB-INF/views/common/nav.jsp" />
+			<!-- 우측 본문 -->
+			<main class="col-md-10 main-area">
+				<h2>회원 관리</h2>
+
+
+				건수 : <select name="size" id="size">
+					<c:forTokens items="10,30,90,100" delims="," var="size">
+						<option value="${size}"
+							${pageResponse.size == size ? 'selected' : ''}>${size}</option>
+					</c:forTokens>
+				</select>
+
+				<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
+				(${pageResponse.pageNo}/${pageResponse.totalPage})<br />
+
+				<form action="list?searchValue=${pageResponse.searchValue}"
+					name="searchID" id="searchID">
+					검색어 : <input type="text" name="searchValue" id="searchValue"
+						value="${pageResponse.searchValue}"> <input type="submit"
+						value="검색">
+				</form>
+				<table class="table table-bordered table-hover text-center align-middle">
+					<thead class="table table-striped table-hover table-bordered align-middle text-center">
+						<tr>
+							<th style="width: 5%;">번호</th>
+							<th style="width: 12%;">아이디</th>
+							<th style="width: 12%;">이름</th>
+							<th style="width: 14%;">생년월일</th>
+							<th style="width: 10%;">관리자 여부</th>
+							<th style="width: 16%;">로그인 일시</th>
+							<th style="width: 12%;">로그인 차단여부</th>
+							<th style="width: 10%;">탈퇴여부</th>
+							<th style="width: 14%;">탈퇴 날짜</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${pageResponse.list}" var="item"
+							varStatus="status">
+							<tr>
+								<td>${status.count + (pageResponse.pageNo - 1) * pageResponse.size}</td>
+								<td><a href="detailView?userid=${item.userid}">${item.userid}</a></td>
+								<td>${item.name}</td>
+								<td>${item.birthdate}</td>
+								<td>${item.supervisor}</td>
+								<td>${item.loginTime}</td>
+								<td><input type="checkbox"
+									class="form-check-input ban-toggle"
+									data-userid="${item.userid}"
+									${item.fail_login == 5 ? 'checked' : ''}
+									${item.supervisor == 'Y' ? 'disabled' : ''}></td>
+								<td>${item.is_deleted}</td>
+								<td>${item.deleted_at}</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				
+			</main>
+		</div>
+	</div>
+	<!-- 페이지 처리 -->
+	<c:if test="${pageResponse.prev}">
+		<a
+			href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>
       &searchValue=${pageResponse.searchValue}
-    </c:if>"> 이전 </a>
+    </c:if>">
+			이전 </a>
 	</c:if>
-	<c:forEach begin="${pageResponse.startPage}" end = "${pageResponse.endPage}" var="pageNo">
-		<a href="list?pageNo=${pageNo}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}</c:if>">
+	<c:forEach begin="${pageResponse.startPage}"
+		end="${pageResponse.endPage}" var="pageNo">
+		<a
+			href="list?pageNo=${pageNo}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}</c:if>">
 			<c:choose>
-				<c:when test="${pageNo == pageResponse.pageNo}"><b>${pageNo}</b></c:when>
+				<c:when test="${pageNo == pageResponse.pageNo}">
+					<b>${pageNo}</b>
+				</c:when>
 				<c:otherwise>${pageNo}</c:otherwise>
 			</c:choose>
 		</a>
 	</c:forEach>
 	<c:if test="${pageResponse.next}">
-	<a href="list?pageNo=${pageResponse.endPage+1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}
-    </c:if>"> 다음 </a>
+		<a
+			href="list?pageNo=${pageResponse.endPage+1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}
+    </c:if>">
+			다음 </a>
 	</c:if>
-	
+
 	<script type="text/javascript">
 	 const size = document.querySelector("#size");
 	size.addEventListener("change", e => {
 		location = "list?pageNo=1&size=" + size.value;	
 	});
+	
+	//유저 밴처리 관련 스크립트
+	document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.ban-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+      const userid = this.dataset.userid;
+      const banned = this.checked ? 'Y' : 'N';
+
+      // 서버로 POST 전송 (fetch)
+      fetch('ban', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userid, banned })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          alert(result.message);
+        } else {
+          alert(result.message);
+          location.reload(); // 실패 시 원래대로 되돌리기
+        }
+      });
+    });
+  });
+});
 </script>
 </body>
 </html>

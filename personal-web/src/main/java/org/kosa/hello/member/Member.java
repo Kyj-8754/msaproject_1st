@@ -21,8 +21,9 @@ public class Member {
 	private String jibunaddress;
 	private String detail_add;
 	private int fail_login;
-	private char supervisor;
+	private String supervisor;
 	private String regi_date;
+	private String birthdate;
 	
 	
 	public boolean isValid() {

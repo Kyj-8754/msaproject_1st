@@ -1,6 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    pageEncoding="UTF-8"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>개인 커뮤니티</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<c:set var="root" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" type="text/css" href="${root}/resources/css/common.css"/>
+</head>
+<body>
+<!-- 상단 헤더부분 -->
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <!-- 메인 콘텐츠 -->
@@ -113,7 +127,6 @@
 						</div>
 						<div class="d-flex justify-content-center gap-2">
 							<button class="btn btn-primary" type="submit">회원 가입</button>
-							<button class="btn btn-secondary" type="reset">초기화</button>
 						</div>
 					</form>
 				</div>
@@ -300,8 +313,9 @@
 			const detail_add = document.querySelector("#detail_Add").value;
 			//나이 계산용
 			const birthYear = document.querySelector("#birthYear").value;
-			const currentYear = new Date().getFullYear();
-			const age = currentYear - birthYear + 1;
+			const birthMonth = document.querySelector("#birthMonth").value;
+			const birthDay = document.querySelector("#birthDay").value;
+			const birthdate = birthYear + "-" + birthMonth + "-" + birthDay;
 			const phone_no = document.querySelector("#phone_no").value; 
 			
 			
@@ -311,7 +325,7 @@
 		  		headers: {
 		    		'Content-Type':'application/json;charset=utf-8',
 		  },
-		  body: JSON.stringify({userid, passwd, postcode, roadaddress, jibunaddress, detail_add,  name, age, phone_no})
+		  body: JSON.stringify({userid, passwd, postcode, roadaddress, jibunaddress, detail_add,  name, birthdate, phone_no})
 		})
 		  .then(response => response.text())
 		  .then(result => {

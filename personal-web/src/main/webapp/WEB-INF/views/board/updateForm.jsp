@@ -1,78 +1,77 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>게시물 수정</title>
-<style>
-     header {
-    position: fixed;
-    top: 10px;
-    right: 107px;
-  }
-
-  body {
-    text-align: center;
-    margin: 0;
-    /* 기본 여백 제거 */
-    padding: 0;
-    font-family: sans-serif;
-  }
-
-  /* 테이블 스타일 */
-  table {
-    border-collapse: collapse;
-    /* 셀 간 간격 제거 */
-    margin: 80px auto 0;
-    /* 헤더와 겹치지 않도록 상단 여백을 조금 줌 */
-    width: 1000px;
-    text-align: left;
-  }
-
-  /* 등록 버튼 */
-  .comment-input button {
-      margin-left: 10px;
-      padding: 8px 16px;
-      border: 1px solid #ccc;
-      background: #f7f7f7;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<c:set var="root" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" type="text/css"
+	href="${root}/resources/css/common.css" />
 </head>
 <body>
-<a href="/yj">
-    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
-      <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"/>
-    </svg></a>
- <h2 style="text-align: left; padding-left: 270px;">게시물 수정</h2>
-  <form id="boardForm" method="post">
-    <table>
-      <tr>
-        <td><input name="bno" id="bno" value="${boardDB.bno}" type="hidden">제목</td>
-        <td><input type="text" name="title" id ="title" size="50" value="${boardDB.title}"></td>
-        <td style="text-align: right;">작성자 ID: <strong>${boardDB.writer}</strong></td>
-        <td>비밀번호<input type="password" name="passwd" id ="passwd"></td>
-      </tr>
-      <tr>
-        <td style="position: fixed;">내용</td>
-        <td colspan="2">
-          <textarea name="content" id="content" rows="10" cols="80" >${boardDB.content}</textarea>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <!-- 수정 -->
-		  <button type="submit" formaction="update">수정</button>
-		  <!-- 삭제 -->
-		  <button type="submit" formaction="delete">삭제하기</button>
-        </td>
-      </tr>
-    </table>
-   </form>
-	
+	<!-- 상단 헤더부분 -->
+	<jsp:include page="/WEB-INF/views/common/header.jsp" />
+	<!-- 메인 콘텐츠 -->
+	<div class="container-fluid main-container">
+		<div class="row h-100">
+			<jsp:include page="/WEB-INF/views/common/nav.jsp" />
+			<!-- 우측 본문 -->
+			<main class="col-md-10 main-area">
+				<h2>게시물 수정</h2>
+				<div class="card-body">
+					<form id="boardForm" method="post">
+						<!-- 레이블 줄 -->
+						<div class="row mb-2">
+							<div class="col-md-6 col-lg-6">
+								<label for="title" class="form-label">제목</label>
+							</div>
+							<div class="col-md-3 col-lg-3">
+								<label for="writer" class="form-label">작성자 ID</label>
+							</div>
+							<div class="col-md-3 col-lg-3">
+								<label for="passwd" class="form-label">비밀번호</label>
+							</div>
+						</div>
+
+						<!-- 입력 필드 줄 -->
+						<div class="row align-items-center mb-4">
+							<div class="col-md-6 col-lg-6">
+								<input type="hidden" name="bno" id="bno" value="${boardDB.bno}">
+								<input type="text" class="form-control" name="title" id="title"
+									value="${boardDB.title}" required>
+							</div>
+							<div class="col-md-3 col-lg-3">
+								<input type="text" class="form-control" name="writer" id="writer" readonly value="${boardDB.writer}">
+							</div>
+							<div class="col-md-3 col-lg-3">
+								<input type="password" class="form-control" name="passwd"
+									id="passwd" required>
+							</div>
+						</div>
+						<div class="mb-4">
+							<label for="content" class="form-label">내용</label>
+							<textarea class="form-control" name="content" id="content"
+								rows="10"
+								style="resize: none; overflow: auto; max-height: 300px;"
+								required>${boardDB.content}</textarea>
+						</div>
+						<div class="d-flex justify-content-end">
+							<!-- 수정 -->
+							<button type="submit" formaction="update" class="btn btn-primary me-2">수정</button>
+							<!-- 삭제 -->
+							<button type="submit" formaction="delete" class="btn btn-danger">삭제하기</button>
+						</div>
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
 </body>
 </html>

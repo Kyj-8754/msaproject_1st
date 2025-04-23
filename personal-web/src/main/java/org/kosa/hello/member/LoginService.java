@@ -3,6 +3,8 @@ package org.kosa.hello.member;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.kosa.hello.page.PageResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,7 +31,7 @@ public class LoginService{
 			return new LoginResult(LoginStatus.NO_USER, null, 0);
 		}
 		// 회원 차단여부 판단로직
-		 if (member.getFail_login()+1 >= max_fail) {
+		 if (member.getFail_login() >= max_fail) {
 		        return new LoginResult(LoginStatus.FAIL_LOCKED, null, member.getFail_login());
 		    }
 		 
@@ -49,10 +51,12 @@ public class LoginService{
 	}
 	
 
-	
+	// 멤버정보 가져오기
 	public Member getMember(String userid) {
 		return loginDAO.getMember(userid);
 	}
+	
+	// 멤버 업데이트
 	public Member update(String userid, String passwd, String name, int age) {
 		Member member = loginDAO.getMember(userid);
 		if (member != null) {
@@ -64,7 +68,7 @@ public class LoginService{
 		}
 		return null;
 	}
-
+	// 회원 수정
 	public Member update(Member member) {
 		Member memberDB = loginDAO.getMember(member.getUserid());
 		if (memberDB == null) {
@@ -73,11 +77,12 @@ public class LoginService{
 		loginDAO.update(member);
 		return member;
 	}
-
+	
+	// 회원 등록
 	public int registForm(Member member) {
 		return loginDAO.regist(member);
 	}
-
+	// 회원 리스트
 	public PageResponseVO list(String searchValue, int pageNumber, int size) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -93,10 +98,19 @@ public class LoginService{
 				searchValue);
 		
 	}
-
+	// 회원 삭제
 	public void delete(String userid) {
 		loginDAO.delete(userid);
 	}
+	
+	//회원 밴처리
+	public void ban(String userid) {
+		loginDAO.ban(userid);
+	}
 
+	//회원 밴해제처리
+	public void unban(String userid) {
+		loginDAO.unban(userid);
+	}
 	
 }

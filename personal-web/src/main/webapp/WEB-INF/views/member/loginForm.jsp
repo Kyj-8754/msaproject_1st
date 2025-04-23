@@ -1,7 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+    pageEncoding="UTF-8"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>개인 커뮤니티</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<c:set var="root" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" type="text/css" href="${root}/resources/css/common.css"/>
 <!-- 별도 css추가 -->
  <style>
     .login-container {
@@ -13,6 +23,11 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>
+</head>
+<body>
+<!-- 상단 헤더 부분 -->
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+
 <!-- 메인 콘텐츠 -->
 	<div class="container-fluid main-container">
 		<div class="row h-100">
@@ -33,7 +48,8 @@
 								required>
 						</div>
 						<div class="d-flex justify-content-center gap-2">
-						<input type="submit" class="btn btn-primary" value="로그인">
+						<input type="submit" class="btn btn-primary"  value="로그인">
+						<input type="button" class="btn btn-secondary" onClick="location.href='registForm'" value="회원가입">
 						</div>
 						<div class="d-flex justify-content-center gap-2">
 						<a href="findID">아이디 찾기</a>
@@ -49,7 +65,7 @@
 // 로그인 확인후 패치
 		let loginForm = document.querySelector("#login");
 		loginForm.addEventListener("submit", e => {
-			console.log("fetch 실행됨")
+			
 			 e.preventDefault();
 		const userid = document.querySelector("#userid");
 		const passwd = document.querySelector("#passwd");
@@ -58,7 +74,7 @@
 				userid.focus();
 				return;
 			}
-			
+			console.log("fetch 실행됨")
 		fetch("login", { 
 	  		method: 'post', 
 	  		headers: {

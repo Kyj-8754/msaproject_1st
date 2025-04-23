@@ -1,49 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<jsp:include page="/WEB-INF/views/common/header.jsp" />
-<!-- <!DOCTYPE html>
+    pageEncoding="UTF-8"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>게시판</title>
-<style>
-   header {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-    }
-
-  /* body 전체 내용을 가운데 정렬 */
-  body {
-    text-align: center;
-  }
-  
-  /* 테이블 가운데 정렬 및 테두리 제거 */
-  table {
-    border-collapse: collapse; /* 셀 간 간격 제거 */
-    margin: 0 auto;            /* 테이블을 가운데 배치 */
-    width: 1000px;
-  }
-  
-  /* th, td의 기본 테두리 제거 및 패딩 적용 */
-  th, td {
-    border: none;
-    padding: 6px;
-  }
-  
-  /* thead 영역은 별도의 테두리 없음 */
-  thead tr {
-    border-bottom: 2px solid gray;
-  }
-  
-  /* tbody의 각 행에 회색 밑줄 추가 */
-  tbody tr {
-    border-bottom: 1px solid gray;
-  }
-</style>
+<title>개인 커뮤니티</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${root}/resources/css/common.css"/>
 </head>
-<body> -->
+<body>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
+
 <div class="container-fluid main-container">
 	<div class="row h-100">
 		<jsp:include page="/WEB-INF/views/common/nav.jsp" />
@@ -58,7 +29,7 @@
 			</select>
 
 			<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
-			(${pageResponse.pageNo}/${pageResponse.totalPage})<br />
+			(${pageResponse.pageNo}/${pageResponse.totalPage})
 
 			<form action="list?searchValue=${pageResponse.searchValue}"
 				name="searchID" id="searchID">
@@ -88,24 +59,22 @@
 				</tbody>
 			</table>
 			<!-- 페이지 처리 -->
+			<div class="d-flex justify-content-center">
 			<c:if test="${pageResponse.prev}">
-				<a
-					href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>
-      &searchValue=${pageResponse.searchValue}
-    </c:if>">
-					이전 </a>
+				<a href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}
+				<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}
+    			</c:if>">이전 </a>
 			</c:if>
 			<c:forEach begin="${pageResponse.startPage}"
 				end="${pageResponse.endPage}" var="pageNo">
-				<a
-					href="list?pageNo=${pageNo}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}</c:if>">
+				<a href="list?pageNo=${pageNo}&size=${pageResponse.size} <c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}</c:if>">
 					<c:choose>
 						<c:when test="${pageNo == pageResponse.pageNo}">
 							<b>${pageNo}</b>
 						</c:when>
 						<c:otherwise>${pageNo}</c:otherwise>
 					</c:choose>
-				</a>
+				</a>&nbsp;
 			</c:forEach>
 			<c:if test="${pageResponse.next}">
 				<a
@@ -113,6 +82,7 @@
     </c:if>">
 					다음 </a>
 			</c:if>
+			</div>
 		</main>
 	</div>
 </div>

@@ -1,6 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    pageEncoding="UTF-8"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>개인 커뮤니티</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+	
+<c:set var="root" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" type="text/css" href="${root}/resources/css/common.css"/>
+</head>
+<body>
+<!-- 상단 헤더 부분 -->
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 <!-- 메인 콘텐츠 -->
 <div class="container-fluid main-container">
@@ -42,7 +57,7 @@
 							<th scope="row">최근 로그인</th>
 							<td>${memberDB.loginTime}</td>
 						</tr>
-						<c:if test="${memberDB.supervisor == Y}">
+						<c:if test="${SessionMember.supervisor == 'Y'}">
 							<tr>
 								<th scope="row">탈퇴 여부</th>
 								<td>${memberDB.is_deleted}</td>
@@ -54,6 +69,7 @@
 						</c:if>
 					</tbody>
 				</table>
+				<c:if test="${memberDB.userid == SessionMember.userid}">
 				<div class="mt-4 d-flex justify-content-center gap-3">
 					<a href="/yj" class="btn btn-outline-primary">메인으로</a> <a
 						href="updateForm?userid=${memberDB.userid}"
@@ -61,6 +77,7 @@
 						href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원
 						탈퇴</a>
 				</div>
+				</c:if>
 			</div>
 		</main>
 	</div>
