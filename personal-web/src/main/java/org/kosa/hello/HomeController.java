@@ -6,8 +6,11 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
+import org.kosa.hello.board.BoardService;
+import org.kosa.hello.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @Controller 
 @Slf4j
 public class HomeController {
+	
+	@Autowired
+	BoardService boardService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -39,6 +45,11 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		
+		model.addAttribute("pageResponse",boardService.list(null,
+				Util.parseInt(null, 1),
+				Util.parseInt(null, 10)
+				));
 		
 		return "home";
 	}

@@ -1,84 +1,70 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>회원 상세정보</title>
-  <style>
-     /* 기본 바디 스타일 */
-     body {
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    
-    /* 우상단 헤더: 홈으로 아이콘 */
-    header {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
-    }
-    
-    /* 중앙에 배치할 컨테이너 */
-    .container {
-      max-width: 600px;          /* 최대 너비 */
-      margin: 120px auto 40px;    /* 상단 여백 120px (헤더와 제목 공간 확보), 하단 여백 40px */
-      padding: 20px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      text-align: left;
-    }
-    
-    /* 페이지 제목 */
-    h1 {
-      text-align: center;
-      margin-top: 80px;
-      font-size: 28px;
-      color: #333;
-    }
-    
-    /* 회원 정보 항목 */
-    .member-info div {
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed #ccc;
-    }
-    .member-info div:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-    
-    /* 항목의 제목 (라벨) */
-    .member-info strong {
-      display: inline-block;
-      width: 150px; /* 라벨 폭을 고정하면 정렬이 깔끔해집니다. */
-    }
-  </style>
-</head>
-<body>
- <h1>회원 상세보기</h1>
-  <div class="container">
-    <div class="member-info">
-      <div><strong>아이디:</strong> ${memberDB.userid}</div>
-      <div><strong>이름:</strong> ${memberDB.name}</div>
-      <div><strong>나이:</strong> ${memberDB.age}</div>
-      <div><strong>핸드폰:</strong> ${memberDB.phone_no}</div>
-      <div><strong>주소:</strong> ${memberDB.roadaddress} ${memberDB.jibunaddress}</div>
-      <div><strong>상세 주소:</strong> ${memberDB.detail_add}</div>
-      <div><strong>최근로그인일시:</strong> ${memberDB.loginTime}</div>
-      <div><strong>회원 탈퇴 여부:</strong> ${memberDB.is_deleted}</div>
-      <div><strong>탈퇴일:</strong> ${memberDB.deleted_at}</div>
-    </div>
-	<a href="/yj">메인으로</a>
-	<a href="updateForm?userid=${memberDB.userid}">회원 수정</a>
-	<a href="unregister?userid=${memberDB.userid}">회원 탈퇴</a>
-  </div>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
+<!-- 메인 콘텐츠 -->
+<div class="container-fluid main-container">
+	<div class="row h-100">
+		<jsp:include page="/WEB-INF/views/common/nav.jsp" />
+		<!-- 우측 본문 -->
+		<main class="col-md-10 main-area">
+			<div class="container mt-5">
+				<div class="card-header text-center">
+					<h3 class="mb-0">회원 상세보기</h3>
+				</div>
+				<table class="table" class="table-group-divider">
+					<tbody>
+						<tr>
+							<th scope="row">아이디</th>
+							<td>${memberDB.userid}</td>
+						</tr>
+						<tr>
+							<th scope="row">이름</th>
+							<td>${memberDB.name}</td>
+						</tr>
+						<tr>
+							<th scope="row">나이</th>
+							<td>${memberDB.age}</td>
+						</tr>
+						<tr>
+							<th scope="row">핸드폰</th>
+							<td>${memberDB.phone_no}</td>
+						</tr>
+						<tr>
+							<th scope="row">주소</th>
+							<td>${memberDB.roadaddress}${memberDB.jibunaddress}</td>
+						</tr>
+						<tr>
+							<th scope="row">상세주소</th>
+							<td>${memberDB.detail_add}</td>
+						</tr>
+						<tr>
+							<th scope="row">최근 로그인</th>
+							<td>${memberDB.loginTime}</td>
+						</tr>
+						<c:if test="${memberDB.supervisor == Y}">
+							<tr>
+								<th scope="row">탈퇴 여부</th>
+								<td>${memberDB.is_deleted}</td>
+							</tr>
+							<tr>
+								<th scope="row">탈퇴일</th>
+								<td>${memberDB.deleted_at}</td>
+							</tr>
+						</c:if>
+					</tbody>
+				</table>
+				<div class="mt-4 d-flex justify-content-center gap-3">
+					<a href="/yj" class="btn btn-outline-primary">메인으로</a> <a
+						href="updateForm?userid=${memberDB.userid}"
+						class="btn btn-primary">회원 수정</a> <a
+						href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원
+						탈퇴</a>
+				</div>
+			</div>
+		</main>
+	</div>
+</div>
+
 </body>
 </html>

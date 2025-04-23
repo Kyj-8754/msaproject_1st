@@ -7,7 +7,11 @@
 <head>
 <meta charset="UTF-8">
 <title>회원정보 수정</title>
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- <style>
     body {
       font-family: 'Arial', sans-serif;
       background-color: #f5f5f5;
@@ -71,15 +75,7 @@
       top: 10px;
       right: 10px;
     }
-  </style>
-<script type="text/javascript">
-<c:if test="${error}">
-alert("입력 자료가 부족합니다")
-</c:if>
-<c:if test="${errorNotExist}">
-alert("수정하려고하시려는 회원이 존재하지 않습니다.\n확인좀 해줘 ~~~~ ")
-</c:if>
-</script>
+  </style> -->
 </head>
 <body>
 
@@ -166,9 +162,6 @@ alert("수정하려고하시려는 회원이 존재하지 않습니다.\n확인�
 		  }
 	  })
 		 		});
-<c:if test="${error}">
-	alert("아이디 또는 비밀번호가 잘못되었습니다");
-</c:if>
 </script>
 </body>
 </html>

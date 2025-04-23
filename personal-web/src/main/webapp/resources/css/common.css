@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+html, body {
+	height: 100%;
+}
+
+.main-container {
+	min-height: calc(100vh - 80px); /* 로그인/헤더 제외한 높이 */
+}
+
+.nav-area {
+	background-color: #f8f9fa;
+	height: 100%;
+	padding: 20px;
+}
+
+.main-area {
+	background-color: #fff;
+	padding: 20px;
+	height: 100%;
+}
