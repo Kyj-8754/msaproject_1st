@@ -1,15 +1,18 @@
 package org.kosa.hello.board;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kosa.hello.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,27 +31,41 @@ public class BoardController {
 		}
 	
 	// 게시판 등록하기
-	@RequestMapping("regist")
-	public String regist(@ModelAttribute Board board) {
-		
+	@PostMapping("regist")
+	@ResponseBody
+	public Map<String, Object> regist(@RequestBody Board board) {
+		Map<String, Object> result = new HashMap<String, Object>();
 		boardService.registForm(board);
-		return "redirect:/board/list";
+		
+		result.put("error", false);
+		result.put("message", "게시물 등록을 완료했습니다.");
+		return result;
 	}
+	
+	
 	
 	// 게시물 삭제 
 	@PostMapping("delete")
-	public String delete(Model model, @RequestParam int bno,@RequestParam String passwd) {
-		Board board =  boardService.getBoard(bno);
+	@ResponseBody
+	public Map<String, Object> delete(@RequestBody Board board) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Board boardDB =  boardService.getBoard(board.getBno());
 		
-		if(!board.getPasswd().equals(passwd)) {
-			model.addAttribute("error","삭제가 불가능 합니다.");
-			return "redirect:/board/list";
+		if(!boardDB.getPasswd().equals(board.getPasswd())) {
+			result.put("error", true);
+			result.put("message", "게시물 비밀번호가 다름니다.");
+			return result;
 		}
-		System.out.println("삭제합니다.");
 		
-		boardService.delete(bno);
-		return "redirect:/board/list";
+		boardService.delete(board.getBno());
+		result.put("error", false);
+		result.put("message", "게시물 삭제 완료했습니다.");
+		
+		
+		return result;
 	}
+	
+	
 	
 	// 게시판 목록 진입
 	@RequestMapping("list")
@@ -89,18 +106,22 @@ public class BoardController {
 		
 	// 게시판 수정
 	@PostMapping("update")
-	public String update(Board board) {
-		
+	@ResponseBody
+	public Map<String, Object> update(@RequestBody Board board) {
+		Map<String, Object> result = new HashMap<String, Object>();
 		Board boardDB = boardService.getBoard(board.getBno());
-		System.out.println("boardDB" + boardDB.getPasswd() + "board" + board.getPasswd());
+		
 		if (!boardDB.getPasswd().equals(board.getPasswd())) {
-			
-			return "redirect:/board/detailView?bno=" + board.getBno();
+			result.put("error", true);
+			result.put("message", "게시물 비밀번호가 다름니다.");
+			return result;
 		}
 		
 		boardService.update(board);
+		result.put("error", false);
+		result.put("message", "게시물 수정 완료했습니다.");
 		
-		return "redirect:/board/detailView?bno=" + board.getBno();
+		return result;
 	}
 	
 	// 가상 데이터 만들기

@@ -47,9 +47,7 @@
 <!-- 멤버 업데이트 -->
 <update id="update">
 	update tb_member set
-	passwd = #{passwd},
-	name = #{name},
-	age = #{age}
+	passwd = #{passwd}
 	where userid = #{userid}
 </update>
 

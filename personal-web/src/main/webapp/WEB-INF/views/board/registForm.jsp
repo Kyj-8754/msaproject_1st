@@ -25,7 +25,7 @@
 			<main class="col-md-10 main-area">
 				<h2>게시물 등록</h2>
 				<div class="card-body">
-					<form action="regist" method="post">
+					<form action="regist" id="regist" method="post">
 						<div class="mb-3">
 							<label for="title" class="form-label">제목</label> <input
 								type="text" class="form-control" name="title" id="title"
@@ -62,4 +62,47 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+ let regist = document.querySelector("#regist");
+if(regist){
+	regist.addEventListener('submit', e =>{
+		//제출 막음
+		e.preventDefault();
+		
+		// json전달 키와 값 
+	    const param = {
+	    		title: document.querySelector("#title").value,
+	    		writer : document.querySelector("#writer").value,
+				passwd : document.querySelector("#passwd").value,
+				content : document.querySelector("#content").value
+			 } 
+		//컨텍스트 루트
+	   	const contextPath = "${pageContext.request.contextPath}";
+	    
+	      const confirmUpdate = confirm("게시물 등록하시겠습니까?");
+	      if (!confirmUpdate) {
+	        return;
+	      }
+	      
+	      
+	      fetch("regist", { 
+	    		method: 'post', 
+	    		headers: {
+	      		'Content-Type':'application/json;charset=utf-8',
+	    },
+		    body: JSON.stringify(param)
+		  })
+		    .then(response => {return response.json()})
+		    .then(json => {
+		  	  
+		  	  if(json.error){
+		  		  alert(json.message);
+		  	  }else{
+		  		  alert(json.message);
+		  			location= contextPath + "/board/list";
+		  	  }
+		    });
+	});
+}
+</script>
 </html>

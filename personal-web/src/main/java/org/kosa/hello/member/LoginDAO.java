@@ -18,5 +18,5 @@ public interface LoginDAO {
 	public int fail_login(String userid);
 	public int unban(String userid);
 	public boolean ban(String userid);
-	public void delete(String userid);
+	public boolean delete(String userid);
 }

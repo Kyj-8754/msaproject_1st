@@ -64,9 +64,9 @@
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 수정 -->
-							<button type="submit" formaction="update" class="btn btn-primary me-2">수정</button>
+							<button type="submit" formaction="update" id="update" class="btn btn-primary me-2">수정</button>
 							<!-- 삭제 -->
-							<button type="submit" formaction="delete" class="btn btn-danger">삭제하기</button>
+							<button type="submit" formaction="delete" id="delete" class="btn btn-danger">삭제하기</button>
 						</div>
 					</form>
 				</div>
@@ -74,4 +74,73 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+ let update = document.querySelector("#boardForm");
+if(update){
+	update.addEventListener('submit', e =>{
+		const clickedBtn = e.submitter; 
+	    const actionType = clickedBtn?.id;
+	    const param = {
+	    		title: document.querySelector("#title").value,
+	    		bno : document.querySelector("#bno").value,
+				passwd : document.querySelector("#passwd").value,
+				content : document.querySelector("#content").value,
+			 } 
+	   const contextPath = "${pageContext.request.contextPath}";
+	    
+	    if (actionType === "update") {
+	    	e.preventDefault();
+	      const confirmUpdate = confirm("게시물 수정하시겠습니까?");
+	      if (!confirmUpdate) {
+	        return;
+	      }
+	      
+	      
+	      fetch("update", { 
+	    		method: 'post', 
+	    		headers: {
+	      		'Content-Type':'application/json;charset=utf-8',
+	    },
+		    body: JSON.stringify(param)
+		  })
+		    .then(response => {return response.json()})
+		    .then(json => {
+		  	  
+		  	  if(json.error){
+		  		  alert(json.message);
+		  	  }else{
+		  		  alert(json.message);
+		  			location= contextPath + "/board/detailView?bno=" + param.bno;
+		  	  }
+		    })
+	    }
+
+	    if (actionType === "delete") {
+	      const confirmUpdate = confirm("게시물 삭제하시겠습니까?");
+	        e.preventDefault();
+	      if (!confirmUpdate) {
+	        return;
+	      }
+	      
+	      fetch("delete", { 
+	    		method: 'post', 
+	    		headers: {
+	      		'Content-Type':'application/json;charset=utf-8',
+	    },
+		    body: JSON.stringify(param)
+		  })
+		    .then(response => {return response.json()})
+		    .then(json => {
+		  	  
+		  	  if(json.error){
+		  		  alert(json.message);
+		  	  }else{
+		  		  alert(json.message);
+		  			location= contextPath + "/board/list";
+		  	  }
+		    })
+	    }
+	});
+}
+</script>
 </html>

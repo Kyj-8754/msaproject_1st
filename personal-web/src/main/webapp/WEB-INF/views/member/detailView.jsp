@@ -38,8 +38,8 @@
 							<td>${memberDB.name}</td>
 						</tr>
 						<tr>
-							<th scope="row">나이</th>
-							<td>${memberDB.age}</td>
+							<th scope="row">생년월일</th>
+							<td>${memberDB.birthdate}</td>
 						</tr>
 						<tr>
 							<th scope="row">핸드폰</th>
@@ -73,8 +73,8 @@
 				<div class="mt-4 d-flex justify-content-center gap-3">
 					<a href="/yj" class="btn btn-outline-primary">메인으로</a> <a
 						href="updateForm?userid=${memberDB.userid}"
-						class="btn btn-primary">회원 수정</a> <a
-						href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원
+						class="btn btn-primary">회원 수정</a> 
+						<a id="unregist" href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원
 						탈퇴</a>
 				</div>
 				</c:if>
@@ -82,6 +82,39 @@
 		</main>
 	</div>
 </div>
-
 </body>
+<script type="text/javascript">
+ let unregist = document.querySelector("#unregist");
+ if(unregist){
+	 unregist.addEventListener("click", e => {
+			 e.preventDefault();
+
+			 // 수정 하기전 질문
+			const confirmUnregist = confirm("탈퇴하시겠습니까?");
+		    if (!confirmUnregist) return;
+
+			 
+			
+		fetch("unregister", { 
+	  		method: 'post', 
+	  		headers: {
+	    		'Content-Type':'application/json;charset=utf-8',
+	  },
+	  body: JSON.stringify({})
+	})
+	  .then(response => {return response.json()})
+	  .then(json => {
+		  
+		  if(json.error){
+			  alert("삭제 실패했습니다.");
+		  }else{
+			  alert("삭제 되었습니다.")
+			   const contextPath = "${pageContext.request.contextPath}";
+				location= contextPath;  // 홈으로
+		  }
+	  })
+		 		});
+ }
+
+</script>
 </html>

@@ -1,6 +1,5 @@
 package org.kosa.hello.member;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,14 +53,6 @@ public class MemberController {
 			System.out.println("insert 결과: " + result);
 			return result == 1;
 		}
-		
-		//아이디 찾는로직
-//		@RequestMapping("")
-//		public String findID() {
-//			
-//		}
-		
-		//비밀번호 찾는 로직
 		
 		
 
@@ -127,14 +115,12 @@ public class MemberController {
 			//1. 입력값 검증 (java : Controller)
 			if (userid == null || userid.length() == 0) {
 				//jsp로 오류 메시지 출력 
-//				model.addAttribute("error", true);
 				return "redirect:/";  
 			}
 			
 			Member member = loginService.getMember(userid);
 			if (member == null) {
 				//jsp로 오류 메시지 출력 
-//				model.addAttribute("error", true);
 				return "redirect:/";  
 			}
 			
@@ -146,21 +132,46 @@ public class MemberController {
 		//유저 업데이트
 		@PostMapping("update")
 		@ResponseBody
-		public Map<String, Object> update(@RequestBody Member member, HttpSession session){
+		public Map<String, Object> update(@RequestBody Map<String, Object> param, HttpSession session){
 			Map<String, Object> result = new HashMap<String, Object>();
-			System.out.println(member);
-			if (member.getUserid() == null || member.getUserid().length() == 0 
-				|| member.getPasswd() == null || member.getPasswd().length() == 0 
-				|| member.getName() == null || member.getName().length() == 0) 
-				{
-					//jsp로 오류 메시지 출력 
-						result.put("error", true);
-				}
+			//전달받은 json 반환
+			String userid = (String)param.get("userid");
+			String passwd = (String)param.get("passwd");
+			String newPasswd = (String)param.get("newPasswd");
 			
-			Member memberInfo = loginService.update(member);
-				result.put("error", memberInfo == null);
+			System.out.println(newPasswd);
 			
-			session.setAttribute("member", memberInfo);
+			//패스워드 기존값과 같은지 비교, 로그인 서비스 재활용
+			LoginResult member_result = loginService.login(userid, passwd);
+			System.out.println("비교 성공");
+			// 실패하면 다시 리턴
+			if(member_result.getStatus() != LoginStatus.SUCCESS) {
+				result.put("error", true);
+				result.put("message", "기존 비밀번호가 틀림니다.");
+				return result;
+			}
+			System.out.println("비밀번호 수정 시작");
+			
+			// 비밀번호 수정하기 시작
+			// 비밀번호 해시처리
+		    String hash = passwordEncoder.encode(newPasswd);
+		    
+		    
+		    Member reMember = member_result.getMember();
+		    reMember.setPasswd(hash);
+			// 업데이트 시작
+			
+			// 업데이트 완료 확인
+			if(!loginService.update(reMember)) {
+				result.put("error", true);
+				result.put("message", "수정 실패하였습니다..");
+				return result;
+			}
+			result.put("error", false);
+			result.put("message", "수정 완료되었습니다 다시 로그인 해 주세요.");
+			
+			// 회원 수정하면 세션 날리고 다시 접속하도록 유도
+			session.invalidate();
 			return result;
 			}
 	
@@ -181,14 +192,30 @@ public class MemberController {
 			
 			
 			// 유저 삭제
-			@RequestMapping("unregister")
-			public String delete(HttpSession session) {
+			@PostMapping("unregister")
+			@ResponseBody
+			public Map<String, Object> delete(HttpSession session) {
+
+				Map<String, Object> result = new HashMap<String, Object>();
 				Member member =  (Member)session.getAttribute("member");
-				if(member != null) {
-				loginService.delete(member.getUserid());
-				session.invalidate();
-				}
-				return "redirect:/";
+				
+			   
+				if (member == null) {
+			        result.put("error", true);
+			        result.put("message", "로그인이 필요합니다.");
+			        return result;
+			    }
+
+			    boolean success = loginService.delete(member.getUserid());
+
+			    if (success) {
+			        session.invalidate(); // 세션 제거
+			        result.put("error", false);
+			    } else {
+			        result.put("error", true);
+			        result.put("message", "회원 탈퇴 처리 실패");
+			    }
+				return result;
 			}
 			
 			

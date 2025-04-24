@@ -57,26 +57,10 @@ public class LoginService{
 	}
 	
 	// 멤버 업데이트
-	public Member update(String userid, String passwd, String name, int age) {
-		Member member = loginDAO.getMember(userid);
-		if (member != null) {
-			member.setPasswd(passwd);
-			member.setName(name);
-			member.setAge(age);
-			
-			return member;
-		}
-		return null;
+	public boolean update(Member member) {
+			return loginDAO.update(member) > 0;
 	}
-	// 회원 수정
-	public Member update(Member member) {
-		Member memberDB = loginDAO.getMember(member.getUserid());
-		if (memberDB == null) {
-			return null;
-		}
-		loginDAO.update(member);
-		return member;
-	}
+	
 	
 	// 회원 등록
 	public int registForm(Member member) {
@@ -99,8 +83,8 @@ public class LoginService{
 		
 	}
 	// 회원 삭제
-	public void delete(String userid) {
-		loginDAO.delete(userid);
+	public boolean delete(String userid) {
+		return loginDAO.delete(userid);
 	}
 	
 	//회원 밴처리

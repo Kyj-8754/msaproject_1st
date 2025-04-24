@@ -23,9 +23,7 @@
 		<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 		<!-- 우측 본문 -->
 		<main class="col-md-10 main-area">
-
-			<div
-				class="container d-flex justify-content-center align-items-center min-vh-100">
+			<div class="container d-flex justify-content-center align-items-center min-vh-100">
 				<div class="card shadow p-4 rounded w-100" style="max-width: 600px;">
 					<h1 class="text-center mb-4">회원가입</h1>
 					<form class="row g-3 needs-validation" name="registerForm"
@@ -197,6 +195,7 @@
 			  }
 
 		    if (fieldName === 'userid') {
+		   	  validClicked = false;
 		      valid = validateUserId(input.value);
 		    }
 		    
@@ -238,7 +237,7 @@
 	
 	// 비밀번호 검사 같은지 검사
 	function checkPasswordMatch(value, value2) {
-	    return value === value2;
+	    return value.length > 0 && value2.length > 0 && value === value2;
   	}
 	
 	// 아이디 길이 검사 (8자 이상)
@@ -377,10 +376,12 @@
 
 	</script>
 <!-- 주소 api -->
-<script
-	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
+
 	//주소 api 함수
+	var width = 500; //팝업의 너비
+	var height = 600; //팝업의 높이
 	function execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
@@ -409,24 +410,13 @@
                 document.getElementById('postcode').value = data.zonecode;
                 document.getElementById("roadAddress").value = roadAddr;
                 document.getElementById("jibunAddress").value = data.jibunAddress;
-                
-                var guideTextBox = document.getElementById("guide");
-                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
-                if(data.autoRoadAddress) {
-                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
-                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
-                    guideTextBox.style.display = 'block';
-
-                } else if(data.autoJibunAddress) {
-                    var expJibunAddr = data.autoJibunAddress;
-                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
-                    guideTextBox.style.display = 'block';
-                } else {
-                    guideTextBox.innerHTML = '';
-                    guideTextBox.style.display = 'none';
-                }
             }
-        }).open();
+        }).open({
+        	// 팝업 항상 가운데로
+        	left: window.screenX + (window.innerWidth - width) / 2,
+            top: window.screenY + (window.innerHeight - height) / 2
+            
+        });
     }
 	</script>
 </body>
