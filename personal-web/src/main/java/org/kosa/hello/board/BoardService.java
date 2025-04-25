@@ -7,6 +7,7 @@ import java.util.Map;
 import org.kosa.hello.page.PageResponseVO_board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BoardService{
@@ -22,24 +23,28 @@ public class BoardService{
 	}
 	
 	// 조회수 1 증가하기
+	@Transactional
 	public int increseView(int bno) {
 		return boardDAO.increseView(bno);
 	};
 	
 	// 보드 등록하기
+	@Transactional
 	public int registForm(Board board) {
 		return boardDAO.regist(board);
 	}
 	
 	// 보드 삭제 명령문
+	@Transactional
 	public int delete(int bno) {
 		return boardDAO.delete(bno);
 	}
 	
 	// 보드 수정 명령문
-		public void update(Board board) {
-			boardDAO.update(board);
-		}
+	@Transactional
+	public void update(Board board) {
+		boardDAO.update(board);
+	}
 
 		
 	public PageResponseVO_board list(String searchValue, int pageNumber, int size) {
@@ -56,7 +61,7 @@ public class BoardService{
 				searchValue);
 	}
 
-public PageResponseVO_board list_admin(String searchValue, int pageNumber, int size) {
+	public PageResponseVO_board list_admin(String searchValue, int pageNumber, int size) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", (pageNumber-1)*size+1);

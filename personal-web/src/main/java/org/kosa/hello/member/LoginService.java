@@ -9,6 +9,7 @@ import org.kosa.hello.page.PageResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoginService{
@@ -37,15 +38,12 @@ public class LoginService{
 		 
 		// 회원 아이디/비밀번호 검증
 		if (!passwordEncoder.matches(passwd, member.getPasswd())) {
-			loginDAO.fail_login(userid);
+			failLogin(userid);
 	        int fails = member.getFail_login()+1;
 	        return new LoginResult(LoginStatus.FAIL_CREDENTIALS, null, fails);
 	    }
 		
-		//로그인 한시간 기록
-		loginDAO.setLoginTime(userid);
-		// 로그인 횟수 초기화
-	    loginDAO.unban(userid);
+		successLogin(userid);
 	    
 	    return new LoginResult(LoginStatus.SUCCESS, member, 0);
 	}
@@ -57,12 +55,14 @@ public class LoginService{
 	}
 	
 	// 멤버 업데이트
+	@Transactional
 	public boolean update(Member member) {
 			return loginDAO.update(member) > 0;
 	}
 	
 	
 	// 회원 등록
+	@Transactional
 	public int registForm(Member member) {
 		return loginDAO.regist(member);
 	}
@@ -83,18 +83,35 @@ public class LoginService{
 		
 	}
 	// 회원 삭제
+	@Transactional
 	public boolean delete(String userid) {
 		return loginDAO.delete(userid);
 	}
 	
 	//회원 밴처리
+	@Transactional
 	public void ban(String userid) {
 		loginDAO.ban(userid);
 	}
 
 	//회원 밴해제처리
+	@Transactional
 	public void unban(String userid) {
 		loginDAO.unban(userid);
+	}
+	
+	//로그인 한시간 기록
+	// 로그인 횟수 초기화
+	@Transactional
+	public void successLogin(String userid) {
+			loginDAO.setLoginTime(userid);
+		    loginDAO.unban(userid);
+	};
+	
+	//로그인실패
+	@Transactional
+	public void failLogin(String userid) {
+		loginDAO.fail_login(userid);
 	}
 	
 }
