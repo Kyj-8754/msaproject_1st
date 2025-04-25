@@ -78,10 +78,9 @@
 					</tbody>
 				</table>
 				
-			</main>
-		</div>
-	</div>
+		
 	<!-- 페이지 처리 -->
+	<div class="d-flex justify-content-center">
 	<c:if test="${pageResponse.prev}">
 		<a
 			href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>
@@ -99,7 +98,7 @@
 				</c:when>
 				<c:otherwise>${pageNo}</c:otherwise>
 			</c:choose>
-		</a>
+		</a>&nbsp;
 	</c:forEach>
 	<c:if test="${pageResponse.next}">
 		<a
@@ -107,7 +106,10 @@
     </c:if>">
 			다음 </a>
 	</c:if>
-
+	</div>
+		</main>
+		</div>
+	</div>
 	<script type="text/javascript">
 	 const size = document.querySelector("#size");
 	size.addEventListener("change", e => {
