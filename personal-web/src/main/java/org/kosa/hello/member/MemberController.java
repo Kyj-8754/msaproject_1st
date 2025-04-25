@@ -111,6 +111,9 @@ public class MemberController {
 		// 유저 업데이트 폼으로 넘어가기
 		@RequestMapping("updateForm")
 		public String updateForm(Model model, String userid, HttpSession session) {
+			if(session == null) {
+				return "redirect:/"; 
+			}
 			
 			//1. 입력값 검증 (java : Controller)
 			if (userid == null || userid.length() == 0) {
@@ -139,18 +142,16 @@ public class MemberController {
 			String passwd = (String)param.get("passwd");
 			String newPasswd = (String)param.get("newPasswd");
 			
-			System.out.println(newPasswd);
 			
 			//패스워드 기존값과 같은지 비교, 로그인 서비스 재활용
 			LoginResult member_result = loginService.login(userid, passwd);
-			System.out.println("비교 성공");
+			
 			// 실패하면 다시 리턴
 			if(member_result.getStatus() != LoginStatus.SUCCESS) {
 				result.put("error", true);
 				result.put("message", "기존 비밀번호가 틀림니다.");
 				return result;
 			}
-			System.out.println("비밀번호 수정 시작");
 			
 			// 비밀번호 수정하기 시작
 			// 비밀번호 해시처리
@@ -221,7 +222,16 @@ public class MemberController {
 			
 			// 유저 리스트
 			@RequestMapping("list")
-			public String list(Model model, String pageNo, String size, String searchValue) {
+			public String list(Model model, String pageNo, String size, String searchValue, HttpSession session) {
+				
+				if(session == null) {
+					return "redirect:/";
+				}
+				
+				Member member = (Member)session.getAttribute("member");
+				if(member == null || member.getSupervisor().equals("N")) {
+					return "redirect:/";
+				}
 				
 				model.addAttribute("pageResponse",loginService.list(searchValue,
 						Util.parseInt(pageNo, 1),
