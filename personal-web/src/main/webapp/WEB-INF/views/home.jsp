@@ -44,6 +44,8 @@
 						</c:forEach>
 					</tbody>
 				</table>
+				<!-- 더미데이터생산 -->
+				<!-- <a href="member/dummy">더미데이터 생산하기</a> -->
 			</main>
 		</div>
 	</div>

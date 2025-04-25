@@ -270,6 +270,21 @@ public class MemberController {
 				return result;
 				}
 			
+			//더미 데이터
+			/*
+			 * @RequestMapping("dummy") public void loadDummyData() { for (int i = 1; i <=
+			 * 100; i++) { Member member = new Member(); member.setUserid("dummy" + i);
+			 * member.setPasswd(passwordEncoder.encode("1004")); member.setName("dummy" +
+			 * i); member.setBirthdate("1990-1-1"); member.setRoadaddress("도로명주소 " + i);
+			 * member.setJibunaddress("지번주소 " + i); member.setDetail_add("상세주소 " + i);
+			 * member.setPostcode("0000" + i); member.setPhone_no("010-0000-00" +
+			 * String.format("%02d", i));
+			 * 
+			 * loginService.registForm(member); }
+			 * 
+			 * System.out.println("더미회원 완료"); }
+			 */
+			
 				
 		
 }
