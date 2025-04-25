@@ -27,6 +27,7 @@
 				<table class = "table table-striped table-hover table-bordered mt-4">
 					<thead class="table-dark text-center">
 						<tr>
+							<th>글번호</th>
 							<th>제목</th>
 							<th>작성자</th>
 							<th>등록일</th>
@@ -36,6 +37,7 @@
 					<tbody class="text-center">
 						<c:forEach items="${pageResponse.list}" var="item">
 							<tr>
+								<td>${item.bno}</td>
 								<td><a href="board/detailView?bno=${item.bno}">${item.title}</a></td>
 								<td>${item.writer}</td>
 								<td>${item.reg_date}</td>

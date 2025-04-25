@@ -15,6 +15,8 @@ public class Board {
 	private String passwd;
 	private String reg_date;
 	private int view_count;
+	private String is_deleted;
+	private String deleted_at;
 	
 	
 //	public boolean isValid() {

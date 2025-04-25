@@ -48,9 +48,22 @@ public class BoardService{
 		map.put("start", (pageNumber-1)*size+1);
 		map.put("end", pageNumber * size);
 		map.put("searchValue", searchValue);
-		
 		return new PageResponseVO_board(
 				boardDAO.list(map),
+				boardDAO.getTotalCount(map),
+				pageNumber,
+				size,
+				searchValue);
+	}
+
+public PageResponseVO_board list_admin(String searchValue, int pageNumber, int size) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("start", (pageNumber-1)*size+1);
+		map.put("end", pageNumber * size);
+		map.put("searchValue", searchValue);
+		return new PageResponseVO_board(
+				boardDAO.list_admin(map),
 				boardDAO.getTotalCount(map),
 				pageNumber,
 				size,

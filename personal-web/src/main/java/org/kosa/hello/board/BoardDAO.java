@@ -12,6 +12,7 @@ public interface BoardDAO {
 	public int update(Board board);
 	public int regist(Board board);
 	public List<Board> list(Map<String, Object> map);
+	public List<Board> list_admin(Map<String, Object> map);
 	public int getTotalCount(Map<String, Object> map);
 	public int increseView(int bno);
 	public int delete(int bno);

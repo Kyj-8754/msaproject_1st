@@ -47,9 +47,28 @@
 	    SELECT rownum rnum, e.*
 	    FROM (SELECT *
 	        FROM T_BOARD tm 
-	        WHERE is_deleted = 'N'
+	        WHERE
+	         is_deleted = 'N'
 	        <if test="searchValue != null and searchValue != ''">
 	        	AND WRITER LIKE concat(concat('%',#{searchValue}),'%')
+	        </if> 
+	        ORDER BY BNO desc
+	    ) e
+	    WHERE rownum BETWEEN 1 AND #{end}
+	) o
+	WHERE o.rnum BETWEEN #{start} AND #{end}
+</select>
+
+<!-- 게시물 리스트 어드민 전용 -->
+<select id="list_admin" resultType="org.kosa.hello.board.Board">
+	SELECT 
+	*
+	FROM (
+	    SELECT rownum rnum, e.*
+	    FROM (SELECT *
+	        FROM T_BOARD tm 
+	        <if test="searchValue != null and searchValue != ''">
+	        WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
 	        </if> 
 	        ORDER BY BNO desc
 	    ) e

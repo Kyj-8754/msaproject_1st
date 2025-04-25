@@ -41,19 +41,29 @@
 			<table class="table table-striped table-hover table-bordered mt-4">
 				<thead class="table-dark text-center">
 					<tr>
+						<th>글번호</th>
 						<th>제목</th>
 						<th>작성자</th>
 						<th>등록일</th>
 						<th>조회수</th>
+						<c:if test="${member.supervisor == 'Y'}">
+						<th>삭제여부</th>
+						<th>삭제일</th>
+						</c:if>
 					</tr>
 				</thead>
 				<tbody class="text-center">
 					<c:forEach items="${pageResponse.list}" var="item">
 						<tr>
+							<td>${item.bno}</td>
 							<td><a href="detailView?bno=${item.bno}">${item.title}</a></td>
 							<td>${item.writer}</td>
 							<td>${item.reg_date}</td>
 							<td>${item.view_count}</td>
+							<c:if test="${member.supervisor == 'Y'}">
+							<td>${item.is_deleted}</td>
+							<td>${item.deleted_at}</td>
+							</c:if>
 						</tr>
 					</c:forEach>
 				</tbody>
